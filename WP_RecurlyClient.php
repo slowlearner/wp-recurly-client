@@ -16,11 +16,11 @@ class WP_RecurlyClient {
 
     public function request($method = 'GET', $resource='accounts', $more_args = array()) {
         $args = array(
-            'method'    => $method,
+            'method'        => $method,
             'sslverify'     => false,
-            'headers'   => array(
-                'Accept' => 'application/xml',
-                'Content-Type' => 'application/xml; charset=utf-8',
+            'headers'       => array(
+                'Accept'        => 'application/xml',
+                'Content-Type'  => 'application/xml; charset=utf-8',
                 'Authorization' => 'Basic ' . base64_encode($this->apikey),
             ),
         );
@@ -67,7 +67,6 @@ class WP_RecurlyClient {
         }
         return $plans;
     }
-    //@todo
     public function get_account($account_code) {
         $xml = $this->request('GET', "accounts/$account_code");
         if($xml === false) {
@@ -86,8 +85,5 @@ class WP_RecurlyClient {
             'company_name'  => $doc->getElementsByTagName('company_name')->item(0)->nodeValue
           );
         return $user;
-    }
-    public function() {
-
     }
 }
