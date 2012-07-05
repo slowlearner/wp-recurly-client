@@ -4,12 +4,15 @@
  * not for use outside wordpress environment
  */
 class WP_RecurlyClient {
-	public $apikey;
-	public $gateway = 'https://api.recurly.com/v2/';
+	private $apikey;
+	private $gateway = 'https://api.recurly.com/v2/';
+	private $error;
 	public function __construct($apikey) {
 		$this->apikey = $apikey;
 	}
-
+	public function last_error() {
+		return $this->error();
+	}
 
 	public function request($method = 'GET', $resource='accounts', $more_args = array()) {
 		$args = array(
@@ -27,6 +30,11 @@ class WP_RecurlyClient {
 		if($res['response']['code'] == "200") {
 			return $res['body'];
 		}
+		$this->error = array(
+			'code' 			=> $res['response']['code'],
+			'message'		=> $res['response']['message'],
+			'raw_response'	=> $res
+		);
 		return false;
 	}
 	public function update_plan($plan, $args) {
@@ -61,7 +69,22 @@ class WP_RecurlyClient {
 	}
 	//@todo
 	public function get_account($account_code) {
-		$xml = $this->request('GET', 'account');
-	}
+		$xml = $this->request('GET', "accounts/$account_code");
+		if($xml === false) {
+			return false;
+		}
+		$doc = new DOMDocument();
+		$doc->loadXML($xml);
 
+		$user = array(
+			'account_code'	=> $doc->getElementsByTagName('account_code')->item(0)->nodeValue,
+			'state'			=> $doc->getElementsByTagName('state')->item(0)->nodeValue,
+			'username'		=> $doc->getElementsByTagName('username')->item(0)->nodeValue,
+			'email'			=> $doc->getElementsByTagName('email')->item(0)->nodeValue,
+			'first_name'	=> $doc->getElementsByTagName('first_name')->item(0)->nodeValue,
+			'last_name'		=> $doc->getElementsByTagName('last_name')->item(0)->nodeValue,
+			'company_name'	=> $doc->getElementsByTagName('company_name')->item(0)->nodeValue
+		);
+		return $user;
+	}
 }
