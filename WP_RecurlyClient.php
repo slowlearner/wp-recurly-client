@@ -58,6 +58,20 @@ class WP_RecurlyClient {
         }
         return $res;
     }
+    public function get_plan($plan_code) {
+        $xml = $this->request('GET', "plans/$plan_code");
+        $doc =  simplexml_load_string($xml);
+
+        $plan = array(
+            'plan_code'         => (string) $doc->plan_code,
+            'name'              => (string) $doc->name,
+            'description'       => (string) $doc->description,
+            'success_url'       => (string) $doc->success_url,
+            'cancel_url'        => (string) $doc->cancel_url,
+            'accounting_code'   => (string) $doc->accounting_code,
+        );
+        return $plan;
+    }
     public function get_plans() {
         $xml = $this->request('GET', 'plans');
         $doc = new DOMDocument();
