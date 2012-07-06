@@ -6,3 +6,5 @@ the recurly api. Note that this can only be used inside a wordpress environment
 as it uses wordpress' wp_remote_request for sending requests to the api.
 
 Will add more functionalities when I need them :D. 
+
+http://erwin-atuli.com/wordpress-recurly-library/
