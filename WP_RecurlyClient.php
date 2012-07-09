@@ -176,11 +176,28 @@ class WP_RecurlyClient {
         }
         return false;
     }
-    /**
-     * Retrieves the correspoding account from a notifications
-     * @param string $notif the notification body(xml)
-     */
-    public function get_account_from_notif($notif) {
-
+    public function get_subscription_from_notif($notif) {
+        $doc = simplexml_load_string($notif);
+        $subscription = $doc->xpath('subscription');
+        $subscription = current($subscription);
+        $tmp = array(
+            'name'                  => (string) $subscription->plan->name,
+            'plan_code'             => (string) $subscription->plan->plan_code,
+            'uuid'                  => (string) $subscription->uuid,
+            'state'                 => (string) $subscription->state,
+            'unit_amount_in_cents'  => (string) $subscription->unit_amount_in_cents,
+            'currency'              => (string) $subscription->currency,
+            'quantity'              => (string) $subscription->quantity,
+            'activated_at'          => (string) $subscription->activated_at,
+            'canceled_at'           => (string) $subscription->canceled_at,
+            'expires_at'            => (string) $subscription->expires_at,
+            'total_billing_cycles'  => (string) $subscription->total_billing_cycles,
+            'remaining_billing_cycles'  => (string) $subscription->remaining_billing_cycles,
+            'current_period_started_at' => (string) $subscription->current_period_started_at,
+            'current_period_ends_at'    => (string) $subscription->current_period_ends_at,
+            'trial_started_at'          => (string) $subscription->trial_started_at,
+            'trial_ends_at'             => (string) $subscription->trial_ends_at,
+        );
+        return $tmp;
     }
 }
